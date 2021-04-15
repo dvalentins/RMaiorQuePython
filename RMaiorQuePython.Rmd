@@ -1,30 +1,63 @@
 ---
 title: "RMaiorQuePython"
-author: "Lucas Bianchi"
+author: "TIME R"
 date: "4/15/2021"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = F, warning = F)
 ```
 
-## R Markdown
+```{r}
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+library(tidyverse)
+baby_shark <- readr::read_csv("Fish.csv") %>%
+  janitor::clean_names()
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+baby_shark %>%
+  count(species) %>%
+  mutate(species = fct_reorder(species, n)) %>%
+  ggplot(aes(n, species, fill = species)) +
+  geom_col() +
+  theme_minimal() +
+  labs(title = "Os 7 maiores peixes do mundo", fill = "Espécies",
+       x = "Quantidade", y = "Espécies")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+baby_shark %>%
+  ggplot(aes(weight, height)) +
+  geom_point() +
+  theme_minimal() +
+  labs(title = "Relação entre peso e altura",
+       x = "Peso", y = "Altura")
+```
+
+```{r}
+baby_shark %>%
+  ggplot(aes(width, height, size = weight)) +
+  geom_point() +
+  theme_minimal() +
+  labs(title = "Relação entre largura, altura e peso",
+       x = "Largura", y = "Altura", size = "Peso")
+```
+
+```{r}
+baby_shark %>%
+  ggplot(aes(height)) +
+  geom_histogram() +
+  theme_minimal() +
+  labs(title = "Distribuição da altura dos baby sharks",
+       x = "Altura", y = "Frequencia")
+```
+
+```{r}
+lm(height + width ~ weight, data = baby_shark)
+```
+
+
